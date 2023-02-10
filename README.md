@@ -1,2 +1,2 @@
 # GamesTest
-testing for games module
+Game engine and other tasks
