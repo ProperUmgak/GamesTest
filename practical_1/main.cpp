@@ -35,7 +35,7 @@ void Load() {
 	}
 
 	// Load font-face from res dir
-	font.loadFromFile("C:/Programming/GamesEngineering/TEST build/bin/Debug/res/fonts/RobotoMono-Regular.ttf");
+	font.loadFromFile("res/fonts/RobotoMono-Regular.ttf");
 	// Set text element to use font
 	text.setFont(font);
 	// set the character size to 24 pixels
