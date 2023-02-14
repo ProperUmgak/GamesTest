@@ -8,6 +8,8 @@ std::vector<Ship *> ships;
 
 const int gameWidth = 800;
 const int gameHeight = 600;
+const int invaders_rows = 8;
+const int invaders_columns = 6;
 
 sf::Texture spritesheet;
 sf::Sprite invader;
@@ -16,10 +18,25 @@ void Load() {
     if (!spritesheet.loadFromFile("res/img/invaders_sheet.png")) {
         cerr << "Failed to load spritesheet!" << std::endl;
     }
-    invader.setTexture(spritesheet); //goes left,goes down
-    invader.setTextureRect(IntRect(Vector2(0, 0), Vector2(32, 32)));
-    Invader* inv = new Invader(sf::IntRect(Vector2(0, 0), Vector2(32, 32)), { 100,100 });
-    ships.push_back(inv);
+    
+    for (int r = 0; r < invaders_rows; ++r) 
+    { 
+        int i = rand() % 6;
+        auto rect = IntRect(Vector2(i * 32, 0), Vector2(32, 32)); 
+
+        for (int c = 0; c < invaders_columns; ++c) {
+            Vector2f position = { r * 32.f + 100,c * 32.f + 100 };
+            Invader* inv = new Invader(rect, position);
+          
+            ships.push_back(inv);
+        }
+       
+    }
+    Player* player = new Player();
+    ships.push_back(player);
+    
+    Invader::speed = 100.f;
+    Invader::direction = true;
 }
 
 void Update(RenderWindow& window) {
@@ -54,13 +71,13 @@ int main() {
     RenderWindow window(VideoMode({ gameWidth, gameHeight }), "SPACE_INVADERS");
     Load();
     while (window.isOpen()) {
-        //window.clear();
+        window.clear();
         Update(window);
         Render(window);
-        window.display();
         for (const auto s : ships) {
             window.draw(*s);
         }
+        window.display();
     }
     return 0;
 }

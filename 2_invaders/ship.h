@@ -10,6 +10,8 @@ protected:
 public:
     //Constructor that takes a sprite
     explicit Ship(sf::IntRect ir);
+    //move down only invaders
+    virtual void MoveDown();
     //Pure virtual deconstructor -- makes this an abstract class and avoids undefined behaviour!
     virtual ~Ship() = 0;
     //Update, virtual so can be overridden, but not pure virtual
@@ -18,7 +20,17 @@ public:
 
 class Invader : public Ship {
     public:
+        static bool direction;
+        static float speed;
         Invader(sf::IntRect ir, sf::Vector2f pos);
         Invader();
+        void MoveDown()override;
         void Update(const float& dt) override;
+};
+
+class Player : public Ship {
+public:
+    Player();
+    void Update(const float& dt) override;
+    void MoveDown()override;
 };
