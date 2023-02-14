@@ -22,10 +22,33 @@ add_custom_target(copy_resources ALL COMMAND ${CMAKE_COMMAND}
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$<CONFIGURATION>/res
 )
 
+#### Link Dependencies ####
+foreach (exe ${EXECUTABLES})
+  #Set working directory to build dir in visual studio
+  set_target_properties(${exe} PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
+  )
+
+  #Add all SFML libs.
+  target_link_libraries(${exe}
+    #lib_maths # We'll make this later.
+    optimized sfml-graphics debug sfml-graphics-d
+    optimized sfml-audio debug sfml-audio-d
+    optimized sfml-window debug sfml-window-d
+    optimized sfml-system debug sfml-system-d
+    optimized sfml-graphics debug sfml-graphics-d
+    optimized sfml-main
+  )
+
+  add_dependencies(${exe} sfml-graphics sfml-audio copy_resources)
+endforeach ()
+
 #### Practical 1 ####
 file(GLOB_RECURSE SOURCES practical_1/*.cpp practical_1/*.h)
 add_executable(PRACTICAL_1 ${SOURCES})
 target_include_directories(PRACTICAL_1 PRIVATE ${SFML_INCS})
+set(EXECUTABLES ${EXECUTABLES} 2_INVADERS)
+
 target_link_libraries(PRACTICAL_1 sfml-graphics)
 
 #### Working Dir ####
@@ -33,7 +56,18 @@ set_target_properties(PRACTICAL_1
     PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
 )
+add_dependencies(PRACTICAL_1 copy_resources)
 
 
- add_dependencies(PRACTICAL_1 copy_resources)
 
+ ## Space invaders
+file(GLOB_RECURSE SOURCES 2_invaders/*.cpp 2_invaders/*.h)
+add_executable(2_INVADERS ${SOURCES} )
+target_include_directories(2_INVADERS SYSTEM PRIVATE ${SFML_INCS})
+target_link_libraries(2_INVADERS sfml-graphics)
+
+set_target_properties(2_INVADERS 
+    PROPERTIES VS_DEBUGGER_WORKING_DIRECTORY
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/$(Configuration)
+)
+add_dependencies(2_INVADERS copy_resources)
