@@ -1,7 +1,10 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include "ship.h"
 using namespace sf;
 using namespace std;
+
+std::vector<Ship *> ships;
 
 const int gameWidth = 800;
 const int gameHeight = 600;
@@ -15,6 +18,8 @@ void Load() {
     }
     invader.setTexture(spritesheet); //goes left,goes down
     invader.setTextureRect(IntRect(Vector2(0, 0), Vector2(32, 32)));
+    Invader* inv = new Invader(sf::IntRect(Vector2(0, 0), Vector2(32, 32)), { 100,100 });
+    ships.push_back(inv);
 }
 
 void Update(RenderWindow& window) {
@@ -36,7 +41,9 @@ void Update(RenderWindow& window) {
         window.close();
     }
 
-
+    for (auto& s : ships) {
+        s->Update(dt);
+    }
 }
 
 void Render(RenderWindow& window) {
@@ -51,7 +58,9 @@ int main() {
         Update(window);
         Render(window);
         window.display();
-        window.draw(invader);
+        for (const auto s : ships) {
+            window.draw(*s);
+        }
     }
     return 0;
 }
