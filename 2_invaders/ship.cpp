@@ -1,6 +1,7 @@
 //ship.cpp
 #include "ship.h"
 #include "game.h"
+#include "bullets.h"
 using namespace sf;
 using namespace std;
 
@@ -18,6 +19,16 @@ Ship::Ship(IntRect ir) : Sprite() {
 
 void Ship::Update(const float& dt) {}
 void Ship::MoveDown(){}
+
+void Ship::Explode() {
+	setTextureRect(IntRect(Vector2(128, 32), Vector2(32, 32)));
+	_exploded = true;
+}
+
+bool Ship::is_exploded() const {
+	return this->_exploded;
+
+}
 
 //Define the ship deconstructor. 
 //Although we set this to pure virtual, we still have to define it.
@@ -40,6 +51,17 @@ void Player::Update(const float& dt) {
 		dir++;
 	}
 	this->move(Vector2(dir * player_speed * dt, 0.f));
+	
+	static float firetime = 0.0f;
+	
+	firetime -= dt;
+	
+	if (firetime <= 0 && Keyboard::isKeyPressed(Keyboard::Space)) {
+		Bullet::Fire(getPosition(),false);
+		firetime = 0.7f;
+		
+	}
+	
 }
 void Player::MoveDown() {
 
