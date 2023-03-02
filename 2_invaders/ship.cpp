@@ -84,13 +84,21 @@ void Invader::Update(const float& dt) {
 	Ship::Update(dt);
 
 	move(Vector2f(dt * (direction ? 1.0f : -1.0f) * speed, 0.0f));
+	
 	if ((direction && getPosition().x > gameWidth - 16) ||
 		(!direction && getPosition().x < 16)) {
 		direction = !direction;
 		for (int i = 0; i < ships.size(); ++i) {
 			ships[i]->MoveDown();
-		}
-		
+		}	
 	}
+
+	static float firetime = 0.0f;
+	firetime -= dt;
+	if (firetime <= 0 && rand()%100 == 0){
+		Bullet::Fire(getPosition(), true);
+		firetime = 4.0f + (rand() % 60);
+	}
+
 }
 
